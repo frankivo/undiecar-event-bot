@@ -46,7 +46,7 @@ class scraperTest extends AnyFunSuite :
     val act = events.map(_.date)
 
     assert(act.length == 12)
-    assert(exp.forall(act.contains(_)))
+    assert(exp.diff(act).isEmpty)
   }
 
 end scraperTest
