@@ -49,4 +49,11 @@ class scraperTest extends AnyFunSuite :
     assert(exp.diff(act).isEmpty)
   }
 
+  test("last event has correct url") {
+    val body = scraper.getBody(html)
+    val xml = scraper.toXML(body)
+    val events = scraper.getEvents(xml)
+    assert(events.last.url.equals("https://undiecar.com/event/dw12s-at-summit-point/"))
+  }
+
 end scraperTest

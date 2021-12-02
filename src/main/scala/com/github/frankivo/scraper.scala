@@ -37,8 +37,9 @@ object scraper {
       .map(e => {
         val date = getDate((e \\ "td") (1).text)
         val name = (e \\ "a").head.text
+        val url = (e \\ "@href").text
 
-        event(name, date, ", url = ???")
+        event(name, date, url)
       })
   }
 
