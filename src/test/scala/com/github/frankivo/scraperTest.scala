@@ -8,12 +8,10 @@ class scraperTest extends AnyFunSuite :
 
   lazy val html: String = Source.fromResource("events.html").getLines().mkString("\n")
 
-  test("getBody results in fewer lines") {
-    val start = html.split("\n").length
+  test("body has correct amount of lines") {
     val body = scraper.getBody(html)
-    val parsed = scraper.getBody(html).split("\n").length
-
-    assert(parsed < start)
+    val lines = body.replaceAll("""\s\s+""", "\n").split("\n").length
+    assert(lines == 1253)
   }
 
   test("xml is valid") {
@@ -23,14 +21,14 @@ class scraperTest extends AnyFunSuite :
     assert(xml.toString().startsWith("<main"))
   }
 
-  test("amount of events is 12") {
+  test("amount of events is correct") {
     val body = scraper.getBody(html)
     val xml = scraper.toXML(body)
     val events = scraper.getEvents(xml)
     assert(events.length == 12)
   }
 
-  test("first event is 'Street Stocks and MX-5s at Road America'") {
+  test("first event has correct name") {
     val body = scraper.getBody(html)
     val xml = scraper.toXML(body)
     val events = scraper.getEvents(xml)
