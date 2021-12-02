@@ -2,6 +2,10 @@ package com.github.frankivo
 
 import sttp.client3.*
 
+import java.text.SimpleDateFormat
+import java.time.format.TextStyle
+import java.time.{DayOfWeek, LocalDate, Month}
+import java.util.Locale
 import scala.io.Source
 
 object scraper {
@@ -31,7 +35,31 @@ object scraper {
   def getEvents(node: xml.Elem): Seq[event] = {
     ((node \\ "table").head \ "tbody" \ "tr")
       .map(e => {
-        event((e \\ "a").head.text)
+        val date = getDate((e \\ "td") (1).text)
+        val name = (e \\ "a").head.text
+
+        event(name, date, ", url = ???")
       })
   }
+
+  def getDate(raw: String): LocalDate = {
+    val withoutDay = DayOfWeek
+      .values()
+      .map(_.toString)
+      .foldLeft(raw) { (a, b) => a.toUpperCase().replace(b, "") }
+
+    val monthRaw = withoutDay.split(" ").head
+    val monthNum = dateutil.monthNumber(monthRaw).toString
+
+    val nums = """([\d]+)""".r.findAllMatchIn(raw).toSeq
+
+    val dow = nums.head.matched
+    val year = nums(1).matched
+
+    val dateRaw = s"$year-${padLeft(monthNum)}-${padLeft(dow)}"
+
+    LocalDate.parse(dateRaw)
+  }
+
+  private def padLeft(string: String) = string.reverse.padTo(2, "0").mkString.reverse
 }

@@ -1,3 +1,5 @@
 package com.github.frankivo
 
-case class event(name: String)
+import java.time.LocalDate
+
+case class event(name: String, date: LocalDate, url: String)
